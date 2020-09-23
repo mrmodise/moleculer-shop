@@ -527,7 +527,7 @@
 					requests: {
 						greeter: [
 							{ id: "hello", action: "greeter.hello", rest: "/api/greeter/hello", response: null, status: null, duration: null },
-
+							{ id: "swapi", action: "greeter.swapi", rest: "/api/greeter/swapi", fields: [{field: "personId", label: "Person ID", type: "string", paramType: "param", model: "personId"}], response: null, status: null, duration: null },
 							{ id: "welcome", action: "greeter.welcome", rest: "/api/greeter/welcome", fields: [
 								{ field: "name", label: "Name", type: "text", paramType: "param", model: "welcomeName" }
 							], response: null, status: null, duration: null }
@@ -535,7 +535,8 @@
 					},
 
 					fields: {
-						welcomeName: "John"
+						welcomeName: "John",
+						personId: 1,
 					},
 
 					broker: null,

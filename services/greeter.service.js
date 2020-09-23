@@ -1,34 +1,11 @@
 "use strict";
-
-/**
- * @typedef {import('moleculer').Context} Context Moleculer's Context
- */
+const axios = require("axios");
 
 module.exports = {
 	name: "greeter",
-
-	/**
-	 * Settings
-	 */
-	settings: {
-
-	},
-
-	/**
-	 * Dependencies
-	 */
+	settings: {},
 	dependencies: [],
-
-	/**
-	 * Actions
-	 */
 	actions: {
-
-		/**
-		 * Say a 'Hello' action.
-		 *
-		 * @returns
-		 */
 		hello: {
 			rest: {
 				method: "GET",
@@ -38,55 +15,39 @@ module.exports = {
 				return "Hello Moleculer";
 			}
 		},
-
-		/**
-		 * Welcome, a username
-		 *
-		 * @param {String} name - User name
-		 */
 		welcome: {
 			rest: "/welcome",
 			params: {
 				name: "string"
 			},
-			/** @param {Context} ctx  */
 			async handler(ctx) {
 				return `Welcome, ${ctx.params.name}`;
 			}
+		},
+		swapi: {
+			rest: {
+				method: "GET",
+				path: "/swapi",
+			},
+			params: {
+				personId: "string"
+			},
+			async handler(ctx) {
+				this.logger.info(`Request param is: ${ctx.params.personId}`);
+				const response = await axios.get(`https://swapi.dev/api/people/${ctx.params.personId}`);
+				this.logger.info(response["data"]);
+				return response["data"];
+			}
 		}
 	},
-
-	/**
-	 * Events
-	 */
-	events: {
-
-	},
-
-	/**
-	 * Methods
-	 */
-	methods: {
-
-	},
-
-	/**
-	 * Service created lifecycle event handler
-	 */
+	events: {},
+	methods: {},
 	created() {
 
 	},
-
-	/**
-	 * Service started lifecycle event handler
-	 */
 	async started() {
 
 	},
-
-	/**
-	 * Service stopped lifecycle event handler
-	 */
 	async stopped() {
 
 	}
