@@ -519,11 +519,11 @@
 					menu: [
 						{ id: "home", caption: "Home" },
 						{ id: "greeter", caption: "Greeter service" },
+						{ id: "user", caption: "User service" },
 						{ id: "nodes", caption: "Nodes" },
 						{ id: "services", caption: "Services" }
 					],
 					page: "home",
-
 					requests: {
 						greeter: [
 							{ id: "hello", action: "greeter.hello", rest: "/api/greeter/hello", response: null, status: null, duration: null },
@@ -531,19 +531,19 @@
 							{ id: "welcome", action: "greeter.welcome", rest: "/api/greeter/welcome", fields: [
 								{ field: "name", label: "Name", type: "text", paramType: "param", model: "welcomeName" }
 							], response: null, status: null, duration: null }
+						],
+						user: [
+							{ id: "user", action: "user.signup", rest: "/api/user/signup", response: null, status: null, duration: null },
 						]
 					},
-
 					fields: {
 						welcomeName: "John",
 						personId: 1,
 					},
-
 					broker: null,
 					nodes: [],
 					services: [],
 					actions: {},
-
 					showBrokerOptions: false
 				};
 			},
@@ -553,7 +553,6 @@
 					return this.services.filter(svc => !svc.name.startsWith("$"));
 				}
 			},
-
 			methods: {
 				changePage(page) {
 					this.page = page;
@@ -574,13 +573,11 @@
 					else
 						this.fields[field.model] = newValue;
 				},
-
 				getServiceActions(svc) {
 					return Object.keys(svc.actions)
 						.map(name => this.actions[name])
 						.filter(action => !!action);
 				},
-
 				getActionParams(action, maxLen) {
 					if (action.action && action.action.params) {
 						const s = Object.keys(action.action.params).join(", ");
@@ -588,7 +585,6 @@
 					}
 					return "-";
 				},
-
 				getActionREST(svc, action) {
 					if (action.action.rest) {
 						let prefix = svc.fullName || svc.name;
