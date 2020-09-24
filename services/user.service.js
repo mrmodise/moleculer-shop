@@ -15,7 +15,13 @@ module.exports = {
 			rest: {
 				method: "POST /signup",
 				params: {
-					user: { type: "object" }
+					user: { type: "object", props: {
+						firstName: { type: "string"},
+						lastName: { type: "string"},
+						username: { type: "string"},
+						password: { type: "string"},
+						email: { type: "email"},
+					} }
 				}
 			},
 			async handler(ctx) {
