@@ -21,6 +21,8 @@ module.exports = {
 			async handler(ctx) {
 				let entity = ctx.params.user;
 
+				await this.validateUserEntity(entity);
+
 				await this.validateEntity(entity);
 
 				entity.createdAt = new Date();
@@ -34,7 +36,7 @@ module.exports = {
 	},
 	events: {},
 	methods: {
-		async validateEntity(entity) {
+		async validateUserEntity(entity) {
 
 			await this.validateMandatoryFields(entity);
 
