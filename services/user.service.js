@@ -7,7 +7,15 @@ const bcrypt = require("bcryptjs");
 
 module.exports = {
 	name: "user",
-	settings: {},
+	settings: {
+		entityValidator: {
+			username: { type: "string", min: 2 },
+			password: { type: "string", min: 6 },
+			email: { type: "email" },
+			firstName: { type: "string", min: 2},
+			lastName: { type: "string", min: 2},
+		}
+	},
 	mixins: [DbService("users"), CacheCleanerMixin(["cache.clean.users"])],
 	dependencies: [],
 	actions: {
@@ -43,9 +51,6 @@ module.exports = {
 	events: {},
 	methods: {
 		async validateUserEntity(entity) {
-
-			await this.validateMandatoryFields(entity);
-
 			if (entity.username) {
 				const found = await this.adapter.findOne({ username: entity.username });
 
@@ -58,34 +63,6 @@ module.exports = {
 				const found = await this.adapter.findOne({ email: entity.email });
 				if (found)
 					throw new MoleculerClientError("Email is exist!", 422, "", [{ field: "email", message: "exists" }]);
-			}
-		},
-		async validateMandatoryFields(entity) {
-			if (typeof entity.firstName === "undefined" || entity.firstName.length === 0) {
-				throw new MoleculerClientError("Missing mandatory field", 422, [{ field: "firstName", message: "is mandatory" }]);
-			}
-
-			if (typeof entity.lastName === "undefined" || entity.lastName.length === 0) {
-				throw new MoleculerClientError("Missing mandatory field", 422, [{ field: "lastName", message: "is mandatory" }]);
-			}
-
-			if (typeof entity.email === "undefined" || entity.email.length === 0) {
-				throw new MoleculerClientError("Missing mandatory field", 422, [{ field: "email", message: "is mandatory" }]);
-			}
-
-			if (typeof entity.username === "undefined" || entity.username.length === 0) {
-				throw new MoleculerClientError("Missing mandatory field", 422, [{ field: "username", message: "is mandatory" }]);
-			}
-
-			if (typeof entity.password === "undefined" || entity.password.length === 0) {
-				throw new MoleculerClientError("Missing mandatory field", 422, [{ field: "password", message: "is mandatory" }]);
-			}
-
-			if (entity.email) {
-				const emailReg = /\S+@\S+\.\S+/;
-				if (!emailReg.test(entity.email)) {
-					throw new MoleculerClientError("Invalid email", 422, [{ field: "email", message: "is incorrect" }]);
-				}
 			}
 		}
 	},
