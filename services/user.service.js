@@ -14,7 +14,8 @@ module.exports = {
 			email: {type: "email"},
 			firstName: {type: "string", min: 2},
 			lastName: {type: "string", min: 2},
-		}
+		},
+		fields: ["username", "password", "lastName", "firstName", "email", "_id"]
 	},
 	mixins: [DbService("users"), CacheCleanerMixin(["cache.clean.users"])],
 	dependencies: [],
