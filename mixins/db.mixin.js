@@ -1,9 +1,9 @@
 "use strict";
 
 const path = require("path");
-const mkdir = require("mkdir").sync;
-
-const DbService = require("moleculer-web");
+const mkdir = require("mkdirp").sync;
+const DbService = require("moleculer-db");
+require("dotenv").config();
 
 module.exports = function (collection) {
 	if (process.env.MONGO_URI) {
