@@ -28,6 +28,7 @@
     "axios": "0.20.0",
     "bcryptjs": "2.4.3",
     "dotenv": "8.2.0",
+    "jsonwebtoken": "8.5.1",
     "mkdirp": "1.0.4",
     "moleculer": "0.14.10",
     "moleculer-db": "0.8.9",

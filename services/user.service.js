@@ -4,6 +4,7 @@ const {MoleculerClientError} = require("moleculer").Errors;
 const DbService = require("../mixins/db.mixin");
 const CacheCleanerMixin = require("../mixins/cache.cleaner.mixin");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
 	name: "user",
@@ -16,6 +17,7 @@ module.exports = {
 			lastName: {type: "string", min: 2},
 		},
 		fields: ["username", "password", "lastName", "firstName", "email", "_id", "createdAt"],
+		JWT_SECRET: process.env.JWT_SECRET
 	},
 	mixins: [DbService("users"), CacheCleanerMixin(["cache.clean.users"])],
 	dependencies: [],
@@ -60,7 +62,7 @@ module.exports = {
 			},
 			handler: async function (ctx) {
 				let username = ctx.params.username;
-				let password = ctx.params.username;
+				let password = ctx.params.password;
 
 				if (typeof username === "undefined" ||
 					typeof password === "undefined" ||
@@ -74,17 +76,16 @@ module.exports = {
 				this.logger.info(user);
 
 				if (!user)
-					throw new MoleculerClientError("Email or password is invalid!", 422, "", [{
-						field: "email",
-						message: "is not found"
-					}]);
+					throw new MoleculerClientError("Invalid credentials!", 422);
 
 				const response = await bcrypt.compare(password, user.password);
 
 				if (!response)
-					throw new MoleculerClientError("Wrong password!", 422, "", [{ field: "email", message: "is not found" }]);
+					throw new MoleculerClientError("Wrong password!", 422);
 
-				return {token: "12345"};
+				const token = await this.generateJWT(user);
+
+				return {token: token};
 			}
 		}
 	},
@@ -107,6 +108,17 @@ module.exports = {
 				if (found)
 					throw new MoleculerClientError("Email is exist!", 422, "", [{field: "email", message: "exists"}]);
 			}
+		},
+		async generateJWT(user) {
+			const today = new Date();
+			const exp = new Date(today);
+			exp.setDate(today.getDate() + 60);
+
+			return jwt.sign({
+				id: user._id,
+				username: user.username,
+				exp: Math.floor(exp.getTime() / 1000)
+			}, this.settings.JWT_SECRET);
 		}
 	},
 	created() {
