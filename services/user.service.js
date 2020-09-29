@@ -15,7 +15,7 @@ module.exports = {
 			firstName: {type: "string", min: 2},
 			lastName: {type: "string", min: 2},
 		},
-		fields: ["username", "password", "lastName", "firstName", "email", "_id", "createdAt"]
+		fields: ["username", "password", "lastName", "firstName", "email", "_id", "createdAt"],
 	},
 	mixins: [DbService("users"), CacheCleanerMixin(["cache.clean.users"])],
 	dependencies: [],
@@ -48,6 +48,28 @@ module.exports = {
 				const doc = await this.adapter.insert(entity);
 
 				return this.transformDocuments(ctx, {}, doc);
+			}
+		},
+		login: {
+			rest: {
+				method: "POST /login",
+				params: {
+					username: {type: "string"},
+					password: {type: "string"}
+				}
+			},
+			async handler(ctx) {
+				let username = ctx.params.username;
+				let password = ctx.params.username;
+
+				if (typeof username === "undefined" ||
+					typeof password === "undefined" ||
+					username.length === 0 ||
+					password.length === 0) {
+					throw new MoleculerClientError("Please enter username and password", 422);
+				}
+
+				return {token: "12345"};
 			}
 		}
 	},
