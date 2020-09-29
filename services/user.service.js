@@ -58,7 +58,7 @@ module.exports = {
 					password: {type: "string"}
 				}
 			},
-			async handler(ctx) {
+			handler: async function (ctx) {
 				let username = ctx.params.username;
 				let password = ctx.params.username;
 
@@ -68,6 +68,21 @@ module.exports = {
 					password.length === 0) {
 					throw new MoleculerClientError("Please enter username and password", 422);
 				}
+
+				const user = await this.adapter.findOne({username});
+
+				this.logger.info(user);
+
+				if (!user)
+					throw new MoleculerClientError("Email or password is invalid!", 422, "", [{
+						field: "email",
+						message: "is not found"
+					}]);
+
+				const response = await bcrypt.compare(password, user.password);
+
+				if (!response)
+					throw new MoleculerClientError("Wrong password!", 422, "", [{ field: "email", message: "is not found" }]);
 
 				return {token: "12345"};
 			}
