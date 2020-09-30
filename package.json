@@ -35,6 +35,7 @@
     "moleculer-db-adapter-mongo": "0.4.9",
     "moleculer-http-client": "0.4.0",
     "moleculer-web": "0.9.0",
+    "mongoose": "5.10.7",
     "nats": "1.4.12"
   },
   "engines": {
